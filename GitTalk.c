@@ -366,6 +366,8 @@ char* show_list(void){
 	char remote_rm_string[50] = "git remote rm ";
 	int option;
 	char yn;
+	FILE *pFILE;
+	char check_string[10] = "";
 
 	select = (char*)malloc(sizeof(char)*100);
 	select2 = (char*)malloc(sizeof(char)*100);
@@ -416,6 +418,8 @@ char* show_list(void){
 	}
 	if(option == 3){ //이전으로 돌아가기
 		printf("이전 메뉴로 돌아갑니다.\n");
+		sleep(2);
+		system("clear");
 		return NULL;
 	}	
 }
@@ -430,8 +434,8 @@ void chatting(char *chatting_file){
 	char name[30], pw[30];
 	char push_string[100] = "git push https://";
 	char chatting_file_string[100] = "./Chatting/";
-	char msg[200];
-	char total_msg[300];
+	char msg[2000];
+	char total_msg[2100];
 	char add_string[100] = "git add ";
 
 	if (chatting_file == NULL){
@@ -440,7 +444,7 @@ void chatting(char *chatting_file){
 	
 	strcat(chatting_file_string, chatting_file);
 	strcat(add_string, chatting_file_string);
-	strcat(add_string, "> bin.txt 2> bin.txt");
+	strcat(add_string, "> /dev/null 2> /dev/null");
 
 	if ((ifp = fopen(chatting_file_string, "rt")) == NULL){
 			printf("채팅방이 존재하지 않습니다.");
@@ -466,9 +470,11 @@ void chatting(char *chatting_file){
 		ch = getch();
 		if (ch == 10){ //'\n' == 10
 			pthread_cancel(refresh_thread);
-			printf("보낼 메시지를 입력하세요. (200바이트 이내)\n");
+			printf("보낼 메시지를 입력하세요. (2000바이트 이내)\n");
 			scanf("%[^\n]", msg);
 			CLEAR_BUFFER();
+			// printf("채팅을 보내시겠습니까? (y/n) : ");
+			// scanf_char(&ch, 'y', 'n');
 			timer = time(NULL);
 			tm_ptr = localtime(&timer);
 			if (tm_ptr -> tm_hour > 12){ //오후
@@ -593,11 +599,11 @@ void scanf_str(char* ap){
 void scanf_char(char* ap, char choice1, char choice2){
 	scanf("%c", ap);
 	CLEAR_BUFFER();
-	while (*ap != choice1 || *ap != choice2){
-		printf("\n잘못된 값을 입력했습니다. %c혹은 %c를 입력해주세요.\n", choice1, choice2);
+	while (*ap != choice1 && *ap != choice2 && *ap != (choice1 - ('a' - 'A')) && *ap != (choice2 - ('a' - 'A'))){
+		printf("\n잘못된 값을 입력했습니다. %c 또는 %c를 입력해주세요.\n", choice1, choice2);
 		printf("번호를 선택하세요 : ");
 		scanf("%c", ap);
 		CLEAR_BUFFER();
-	}
+		}
 }
 
